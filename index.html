@@ -1,10 +1,52 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-    <title>Luis Backhaus - CV</title>
+  <meta charset="UTF-8">
+  <title>Luis Backhaus</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: sans-serif;
+      background-color: #f5f5f5;
+    }
+    .container {
+      text-align: center;
+    }
+    .profile-pic {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-bottom: 20px;
+      border: 3px solid #333;
+    }
+    h1 {
+      margin: 10px 0;
+    }
+    .logos {
+      margin-top: 20px;
+    }
+    .logos img {
+      width: 40px;
+      margin: 0 10px;
+      vertical-align: middle;
+    }
+  </style>
 </head>
 <body>
+  <div class="container">
+    <img src="assets/profile.jpg" alt="Luis" class="profile-pic">
     <h1>Luis Backhaus</h1>
-    <p>Welcome to my personal website!</p>
-    <p><a href="assets/Luis_CV_March_25.pdf">Download my CV</a></p>
+    <div class="logos">
+      <img src="assets/github.png" alt="GitHub">
+      <img src="assets/linkedin.png" alt="LinkedIn">
+      <img src="assets/email.png" alt="Email">
+    </div>
+  </div>
 </body>
 </html>
