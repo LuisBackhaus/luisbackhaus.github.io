@@ -1,52 +1,66 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Luis Backhaus</title>
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-      height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-family: sans-serif;
-      background-color: #f5f5f5;
-    }
-    .container {
-      text-align: center;
-    }
-    .profile-pic {
-      width: 150px;
-      height: 150px;
-      border-radius: 50%;
-      object-fit: cover;
-      margin-bottom: 20px;
-      border: 3px solid #333;
-    }
-    h1 {
-      margin: 10px 0;
-    }
-    .logos {
-      margin-top: 20px;
-    }
-    .logos img {
-      width: 40px;
-      margin: 0 10px;
-      vertical-align: middle;
-    }
-  </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;300;400;500;700;900&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <title>Luis Backhaus</title>
+    <style>
+        body {
+            font-family: 'Montserrat', sans-serif; /* Apply Montserrat font */
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f5f5f5;
+        }
+        .container {
+            text-align: center;
+        }
+        .profile-pic {
+            width: 400px;
+            height: 400px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 20px;
+            border: 3px solid #333;
+        }
+        h1 {
+            font-size: 3rem; 
+            margin: 5px 0;
+        }
+        .logos {
+            margin-top: 5px;
+        }
+        .logos img {
+            margin: 0 10px; /* Optional: adds spacing between the images */
+            vertical-align: middle; /* Optional: ensures alignment vertically in the middle */
+        }
+        .stanford-logo {
+            width: 120px; /* Set size for GitHub logo */
+        }
+        
+        .airbus-logo {
+            width: 240px; /* Set size for LinkedIn logo */
+        }
+        
+        .tum-logo {
+            width: 70px; /* Set size for Email logo */
+        }
+    </style>
 </head>
 <body>
-  <div class="container">
-    <img src="assets/profile.jpg" alt="Luis" class="profile-pic">
-    <h1>Luis Backhaus</h1>
-    <div class="logos">
-      <img src="assets/github.png" alt="GitHub">
-      <img src="assets/linkedin.png" alt="LinkedIn">
-      <img src="assets/email.png" alt="Email">
+    <div class="container">
+        <img src="assets/Luis_Sicily.jpg" alt="Luis" class="profile-pic">
+        <h1>Luis Backhaus</h1>
+        <div class="logos">
+            <img src="assets/images-removebg-preview.png" alt="StanfordLogo" class="stanford-logo">
+            <img src="assets/AIRBUS_Blue-removebg-preview.png" alt="AirbusLogo" class="airbus-logo">
+            <img src="assets/images-2-removebg-preview.png" alt="TUMLogo" class="tum-logo">
+        </div>
     </div>
-  </div>
 </body>
 </html>
