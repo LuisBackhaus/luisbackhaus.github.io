@@ -9,6 +9,16 @@
     <!-- Font Awesome CDN -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-KVJ4N9HR1V"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-KVJ4N9HR1V');
+    </script>
+   
     <!-- Optional: Google Font -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -32,13 +42,18 @@
             --container-width: 960px;
             --timeline-gap: 50px;
             --dot-size: 16px;
-            --logo-size: 30px; /* Default logo size */
-            --logo-margin: 15px;
+            --logo-size: 30px; /* Default logo size for desktop */
+            --logo-margin: 15px; /* Logo margin for desktop */
             --fade-distance: 5%;
-            --animation-offset-x: 25px;
-            --animation-offset-y: 30px;
+            --animation-offset-x: 25px; /* Desktop animation */
+            --animation-offset-y: 30px; /* General Y animation */
             --animation-duration: 0.7s;
             --project-image-size: 140px; /* Size for project images */
+
+            /* Mobile Specific Variables - will be overridden in media query */
+            --mobile-line-left-offset: 35px;
+            --mobile-content-left-padding: calc(var(--mobile-line-left-offset) + 35px);
+            --mobile-logo-size: 35px;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -51,7 +66,7 @@
             line-height: 1.7;
             font-size: 16px;
             padding: 50px 20px;
-            overflow-x: hidden;
+            overflow-x: hidden; /* Prevent accidental horizontal scroll */
         }
 
         .container {
@@ -72,15 +87,16 @@
             -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black var(--fade-distance), black calc(100% - var(--fade-distance)), transparent 100%);
             mask-image: linear-gradient(to bottom, transparent 0%, black var(--fade-distance), black calc(100% - var(--fade-distance)), transparent 100%);
         }
+        /* DESKTOP Line */
         .timeline-section::before { content: ''; position: absolute; top: 0; bottom: 0; left: 50%; width: 3px; background-color: var(--line-color); transform: translateX(-50%); z-index: 1; }
 
-        /* --- Timeline Item Base --- */
+        /* --- Timeline Item Base (Desktop) --- */
         .timeline-item {
             position: relative;
             width: calc(50% - var(--timeline-gap));
             margin-bottom: 60px;
             opacity: 0;
-            transform: translateY(var(--animation-offset-y));
+            transform: translateY(var(--animation-offset-y)); /* Initial state for animation */
             transition: opacity var(--animation-duration) ease-out,
                         transform var(--animation-duration) cubic-bezier(0.175, 0.885, 0.32, 1.275);
             z-index: 2;
@@ -88,59 +104,57 @@
         }
         .timeline-item:nth-child(odd) {
             left: 0;
-            transform: translateY(var(--animation-offset-y)) translateX(calc(-1 * var(--animation-offset-x)));
+            transform: translateY(var(--animation-offset-y)) translateX(calc(-1 * var(--animation-offset-x))); /* Animate from left */
         }
         .timeline-item:nth-child(even) {
             left: calc(50% + var(--timeline-gap));
-            transform: translateY(var(--animation-offset-y)) translateX(var(--animation-offset-x));
+            transform: translateY(var(--animation-offset-y)) translateX(var(--animation-offset-x)); /* Animate from right */
         }
         .timeline-item.is-visible {
             opacity: 1;
-            transform: translateY(0) translateX(0);
+            transform: translateY(0) translateX(0); /* Final animation state */
         }
 
-        /* --- Timeline Content Box --- */
+        /* --- Timeline Content Box (Desktop) --- */
         .timeline-content {
              background-color: var(--card-bg); padding: 25px; border-radius: 8px; box-shadow: 0 4px 15px var(--shadow-color); position: relative;
         }
-        /* Set default text alignment based on side */
+        /* Set default text alignment based on side for Desktop */
         .timeline-item:nth-child(odd) .timeline-content { text-align: right; }
         .timeline-item:nth-child(even) .timeline-content { text-align: left; }
 
 
-        /* --- Timeline Dot --- */
+        /* --- Timeline Dot (Desktop) --- */
         .timeline-item::after {
             content: ''; position: absolute; width: var(--dot-size); height: var(--dot-size); background-color: var(--card-bg); border: 3px solid var(--dot-color); border-radius: 50%; top: 30px; z-index: 3;
             transition: opacity var(--animation-duration) ease-out;
-            opacity: inherit;
+            opacity: inherit; /* Sync with item animation */
         }
         .timeline-item:nth-child(odd)::after { right: calc(-1 * (var(--timeline-gap) + (var(--dot-size) / 2) - (3px / 2) ) ); }
         .timeline-item:nth-child(even)::after { left: calc(-1 * (var(--timeline-gap) + (var(--dot-size) / 2) + (3px / 2) ) ); }
 
-        /* --- Timeline Logo --- */
-        .timeline-logo { /* Base styles for ALL logos */
+        /* --- Timeline Logo Base Styles --- */
+        .timeline-logo {
             background-color: var(--logo-bg-color);
             border: 1px solid var(--line-color);
             border-radius: 50%;
-            display: flex; /* Use flex for centering image inside */
+            display: flex;
             align-items: center;
             justify-content: center;
             overflow: hidden;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            opacity: inherit;
+            opacity: inherit; /* Sync with item animation */
             transition: opacity var(--animation-duration) ease-out;
-            width: var(--item-logo-size, var(--logo-size));
-            height: var(--item-logo-size, var(--logo-size));
+            /* Default size set by where it's used (inside vs outside) */
         }
         .timeline-logo img {
             display: block; max-width: 100%; max-height: 100%; object-fit: cover; border-radius: 50%;
         }
 
-        /* --- Logo Position (OUTSIDE Box - Default) --- */
-        /* Select logos that are DIRECT children of .timeline-item */
+        /* --- Logo Position (OUTSIDE Box - Desktop) --- */
         .timeline-item > .timeline-logo {
             position: absolute;
-            width: var(--logo-size);
+            width: var(--logo-size); /* Use desktop logo size */
             height: var(--logo-size);
             z-index: 4;
             top: calc(30px + (var(--dot-size) / 2) - (var(--item-logo-size, var(--logo-size)) / 2));
@@ -149,79 +163,53 @@
         .timeline-item:nth-child(even) > .timeline-logo { left: calc(100% + var(--logo-margin)); right: auto; }
 
 
-        /* --- Arrow Pointer --- */
+        /* --- Arrow Pointer (Desktop) --- */
         .timeline-content::before {
             content: " "; height: 0; position: absolute; top: calc(30px + (var(--dot-size) / 2) - 10px); width: 0; z-index: 1; border: medium solid transparent; border-width: 10px;
-            opacity: inherit; transition: opacity var(--animation-duration) ease-out;
+            opacity: inherit; /* Sync with item animation */
+            transition: opacity var(--animation-duration) ease-out;
         }
         .timeline-item:nth-child(odd) .timeline-content::before { right: -20px; border-left-color: var(--card-bg); border-right-width: 0; }
         .timeline-item:nth-child(even) .timeline-content::before { left: -20px; border-right-color: var(--card-bg); border-left-width: 0; }
 
-        /* --- General Content Styling --- */
+        /* --- General Content Styling (Applies to both Desktop/Mobile unless overridden) --- */
         .timeline-content h3 { color: var(--heading-color); font-size: 1.3rem; font-weight: 700; margin-bottom: 5px; }
         .timeline-content .meta { font-size: 0.9rem; color: var(--accent-color); font-weight: 400; display: block; margin-bottom: 15px; }
         .timeline-content p { font-size: 0.95rem; margin-bottom: 10px; }
         .timeline-content ul { margin-top: 10px; font-size: 0.9rem; color: var(--text-color); list-style-position: outside; padding: 0; /* Reset padding */ }
-        /* Adjust List Padding/Alignment based on side (for non-logo-inside) */
+        /* Desktop List Padding/Alignment (for non-logo-inside) */
         .timeline-item:nth-child(odd) .timeline-content:not(.logo-inside) ul { padding-right: 20px; list-style-position: inside; }
         .timeline-item:nth-child(even) .timeline-content:not(.logo-inside) ul { padding-left: 20px; }
 
-        /* --- Styles for Logo INSIDE Content Box --- */
+        /* --- Styles for Logo INSIDE Content Box (Desktop) --- */
         .timeline-content.logo-inside {
             display: flex;
             align-items: flex-start;
             gap: 20px;
-            /* Default direction for EVEN items: Logo first, Text second */
-            flex-direction: row;
-            /* Text alignment is set per side below */
+            flex-direction: row; /* Default: Logo left, Text right */
         }
-
-        /* Logo styling when inside */
         .timeline-content.logo-inside .timeline-logo {
             position: relative; /* Not absolute */
             top: auto; left: auto; right: auto; bottom: auto; /* Reset */
-            opacity: 1;
+            opacity: 1; /* Always visible once parent is */
             flex-shrink: 0;
+            /* Make logo slightly larger when inside */
             width: calc(var(--item-logo-size, var(--logo-size)) * 1.3);
             height: calc(var(--item-logo-size, var(--logo-size)) * 1.3);
-            /* Adjust top margin slightly if needed for better alignment with text */
-            /* margin-top: 2px; */
         }
-
-        /* Text wrapper */
         .logo-inside .text-content {
             flex-grow: 1;
         }
-
-        /* --- Layout for ODD items (LEFT side) with LOGO INSIDE --- */
+        /* Desktop ODD items (LEFT side) with LOGO INSIDE */
         .timeline-item:nth-child(odd) .timeline-content.logo-inside {
-            /* Text first, Logo second */
-            flex-direction: row-reverse; /* !important; */ /* <-- DEBUGGING ONLY */
+            flex-direction: row-reverse; /* Text first, Logo second */
         }
-        .timeline-item:nth-child(odd) .logo-inside .text-content {
-            text-align: right;
-        }
-        .timeline-item:nth-child(odd) .logo-inside ul {
-            text-align: right;
-            padding-right: 20px;
-            padding-left: 0;
-            list-style-position: inside;
-        }
-
-        /* --- Layout for EVEN items (RIGHT side) with LOGO INSIDE --- */
-        .timeline-item:nth-child(even) .timeline-content.logo-inside {
-             /* Logo first, Text second (default row) */
-             flex-direction: row; /* Explicitly set default */
-        }
-        .timeline-item:nth-child(even) .logo-inside .text-content {
-            text-align: left;
-        }
-        .timeline-item:nth-child(even) .logo-inside ul {
-            text-align: left;
-            padding-left: 20px;
-            padding-right: 0;
-            list-style-position: outside;
-        }
+        .timeline-item:nth-child(odd) .logo-inside .text-content { text-align: right; }
+        .timeline-item:nth-child(odd) .logo-inside ul { text-align: right; padding-right: 20px; padding-left: 0; list-style-position: inside; }
+        /* Desktop EVEN items (RIGHT side) with LOGO INSIDE */
+        .timeline-item:nth-child(even) .timeline-content.logo-inside { flex-direction: row; /* Explicitly set default */ }
+        .timeline-item:nth-child(even) .logo-inside .text-content { text-align: left; }
+        .timeline-item:nth-child(even) .logo-inside ul { text-align: left; padding-left: 20px; padding-right: 0; list-style-position: outside; }
 
 
         /* --- Projects Section --- */
@@ -233,42 +221,57 @@
             box-shadow: 0 4px 15px var(--shadow-color);
             margin-top: 80px;
         }
-        .projects h2 {
+        .projects h2 { /* Optional Title */
             color: var(--heading-color);
             font-size: 1.8rem;
-            margin-bottom: 40px; /* Increased margin */
+            margin-bottom: 40px;
             display: inline-block;
             border-bottom: 2px solid var(--accent-color);
             padding-bottom: 5px;
         }
-        .projects-container {
+        .projects-container { /* Desktop layout */
             display: flex;
-            justify-content: space-around; /* Distribute items evenly */
-            align-items: flex-start; /* Align items to the top */
-            flex-wrap: wrap; /* Allow wrapping on smaller screens */
-            gap: 30px; /* Space between project items */
+            justify-content: space-around;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 30px;
         }
-        .project-item {
-            flex-basis: calc(33.333% - 40px); /* Try to fit 3 items, adjust based on gap */
-            max-width: 220px; /* Max width for each item */
-            text-align: center; /* Center title and image */
-            margin-bottom: 20px; /* Space below items when they wrap */
+        .project-item { /* Desktop layout */
+            flex-basis: calc(33.333% - 40px);
+            max-width: 220px;
+            text-align: center;
+            margin-bottom: 20px;
         }
         .project-item h3 {
             color: var(--heading-color);
             font-size: 1.1rem;
             font-weight: 700;
-            margin-bottom: 15px; /* Space between title and image */
+            margin-bottom: 15px;
         }
         .project-image {
             width: var(--project-image-size);
             height: var(--project-image-size);
             border-radius: 50%;
-            object-fit: cover; /* Crop image nicely */
-            margin: 0 auto; /* Center image block */
+            object-fit: cover;
+            margin: 0 auto;
             display: block;
-            border: 4px solid var(--bg-color); /* Optional border */
-            box-shadow: 0 3px 10px rgba(0,0,0,0.1); /* Optional shadow */
+            border: 4px solid var(--bg-color);
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+        /* --- CV Button --- */
+        .cv-button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: var(--accent-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            transition: background-color 0.2s;
+            margin-top: 20px; /* Spacing if Projects title is removed */
+        }
+        .cv-button:hover {
+            background-color: #005bb5; /* Darker accent color */
         }
 
         /* --- Contact Section --- */
@@ -295,6 +298,8 @@
 
 
         /* --- Responsive Design --- */
+
+        /* --- DESKTOP - MEDIUM SCREENS (Optional minor tweaks) --- */
         @media screen and (max-width: 992px) {
              .container { max-width: 720px; }
              :root { --timeline-gap: 40px; }
@@ -302,77 +307,152 @@
              .project-item { flex-basis: calc(50% - 30px); max-width: 250px;}
         }
 
+
+        /* --- <<< MOBILE PHONE STYLES START HERE >>> --- */
         @media screen and (max-width: 768px) {
              body { padding: 30px 15px; }
              .profile-picture { width: 100px; height: 100px; margin-bottom: 20px;}
              .intro h1 { font-size: 2.2rem; }
              .intro .tagline { font-size: 1.1rem; }
-             :root { --fade-distance: 8%; --project-image-size: 120px;}
+             :root { /* Override root variables for mobile */
+                 --fade-distance: 8%;
+                 --project-image-size: 120px;
+                 --mobile-line-left-offset: 35px; /* How far the timeline line is from the left edge */
+                 --mobile-content-left-padding: calc(var(--mobile-line-left-offset) + 35px); /* Space for line, dot, gap */
+                 --mobile-logo-size: 35px; /* Slightly larger logo on mobile */
+                 --dot-size: 14px; /* Slightly smaller dot for mobile */
+             }
 
-            /* --- Mobile Timeline Stacking --- */
-            .timeline-section::before { left: calc(var(--logo-size) + var(--logo-margin) + 15px); transform: translateX(0); }
+            /* --- Mobile Timeline Line --- */
+            .timeline-section::before {
+                left: var(--mobile-line-left-offset); /* Position line on the left */
+                transform: translateX(0); /* Reset desktop transform */
+            }
+
+            /* --- Mobile Timeline Item Stacking --- */
             .timeline-item {
-                width: 100%;
-                padding-left: calc(var(--logo-size) + var(--logo-margin) + var(--timeline-gap));
-                padding-right: 0;
-                left: 0 !important;
-                /* text-align: left !important; */ /* Let content decide */
+                width: 100%; /* Full width */
+                padding-left: var(--mobile-content-left-padding); /* Create space on left for line/dot/logo */
+                padding-right: 0; /* No right padding needed */
+                left: 0 !important; /* Reset horizontal positioning from desktop */
                 margin-bottom: 40px;
-             }
-             .timeline-item:nth-child(odd),
-             .timeline-item:nth-child(even) {
-                 transform: translateY(var(--animation-offset-y)) translateX(var(--animation-offset-x));
-             }
+                /* Reset transforms applied for desktop, only animate Y */
+                transform: translateY(var(--animation-offset-y)) translateX(0);
+            }
+            /* Ensure odd/even don't get shifted left/right */
+            .timeline-item:nth-child(odd),
+            .timeline-item:nth-child(even) {
+                left: 0 !important; /* Override desktop left */
+                 transform: translateY(var(--animation-offset-y)) translateX(0); /* Only Y animation */
+            }
+            /* Animation trigger remains the same */
+            .timeline-item.is-visible {
+                opacity: 1;
+                transform: translateY(0) translateX(0); /* Animate only Y axis */
+            }
 
-            /* Mobile Dot Position */
+            /* --- Mobile Dot Position --- */
              .timeline-item::after {
-                 left: calc(var(--logo-size) + var(--logo-margin) + 15px - (var(--dot-size) / 2) - (3px / 2));
-                 right: auto;
+                 /* Position dot directly on the left line */
+                 left: calc(var(--mobile-line-left-offset) - (var(--dot-size) / 2) - (3px / 2)); /* Center dot on the line */
+                 right: auto; /* Reset right positioning */
+                 top: 30px; /* Keep vertical alignment consistent */
              }
-             .timeline-item:nth-child(odd)::after, .timeline-item:nth-child(even)::after {
-                 left: calc(var(--logo-size) + var(--logo-margin) + 15px - (var(--dot-size) / 2) - (3px / 2));
+             /* No need for odd/even specific dot positioning */
+             .timeline-item:nth-child(odd)::after,
+             .timeline-item:nth-child(even)::after {
+                 left: calc(var(--mobile-line-left-offset) - (var(--dot-size) / 2) - (3px / 2));
                  right: auto;
              }
 
-             /* --- Mobile Logo Position (OUTSIDE Box) --- */
+             /* --- Mobile Logo Position (Specific for logos OUTSIDE box) --- */
+             /* Logos OUTSIDE the box are positioned centered over the line */
              .timeline-item > .timeline-logo {
-                 left: 0 !important;
-                 right: auto !important;
-                 top: calc(30px + (var(--dot-size) / 2) - (var(--item-logo-size, var(--logo-size)) / 2)) !important;
+                left: calc(var(--mobile-line-left-offset) - (var(--mobile-logo-size) / 2)); /* Center logo on the line */
+                right: auto !important; /* Override desktop */
+                top: calc(30px + (var(--dot-size) / 2) - (var(--item-logo-size, var(--mobile-logo-size)) / 2)) !important; /* Align vertically with dot */
+                width: var(--item-logo-size, var(--mobile-logo-size)); /* Use mobile logo size */
+                height: var(--item-logo-size, var(--mobile-logo-size));
+                z-index: 4; /* Ensure logo is above line */
              }
+            /* Remove desktop-specific positioning for logo */
+             .timeline-item:nth-child(odd) > .timeline-logo,
+             .timeline-item:nth-child(even) > .timeline-logo {
+                /* These rules are now covered by the general rule above */
+             }
+
+             /* --- Mobile Content Box Styling --- */
+             .timeline-content {
+                 text-align: left !important; /* Force left alignment */
+                 padding: 20px; /* Adjust padding for mobile */
+                 position: relative; /* Needed for ::before */
+                 /* CREATIVE TOUCH: Add alternating border */
+                 border-left: 4px solid var(--line-color);
+                 margin-left: -15px; /* Optional: Visually pull content left slightly */
+             }
+             .timeline-item:nth-child(odd) .timeline-content {
+                  border-left-color: var(--accent-color); /* Use accent color for odd items */
+             }
+              .timeline-item:nth-child(even) .timeline-content {
+                   border-left-color: #adb5bd; /* Use a different subtle color for even items */
+             }
+
+
+             /* --- Mobile Arrow --- */
+             .timeline-content::before {
+                /* Point arrow left, from content towards the line */
+                left: -14px; /* Position arrow just outside the content box (adjust as needed) */
+                right: auto !important; /* Override desktop */
+                top: calc(30px + (var(--dot-size) / 2) - 10px); /* Align vertically with dot */
+                border-right-color: var(--card-bg) !important; /* Arrow body color */
+                border-left-width: 0 !important; /* No left border */
+                border-left-color: transparent !important; /* Make sure it's not picking up other border colors */
+                border-width: 10px 10px 10px 0; /* Shape points left */
+                /* Note: Arrow color won't automatically match the alternating border with pure CSS */
+             }
+
+
+             /* --- Mobile Text/List Alignment (Default - OUTSIDE Box) --- */
+             .timeline-item .timeline-content:not(.logo-inside) ul {
+                 text-align: left !important;
+                 padding-left: 20px !important; /* Indent list */
+                 padding-right: 0 !important;
+                 list-style-position: outside !important;
+            }
+
 
              /* --- Mobile Layout for Logo INSIDE Box --- */
              .timeline-content.logo-inside {
                  flex-direction: column !important; /* Stack: Logo above Text */
                  align-items: flex-start !important; /* Align content to left */
-                 gap: 10px;
-                 text-align: left !important; /* Force container left align */
+                 gap: 15px;
+                 /* Optional: remove alternating border for logo-inside if it looks cleaner */
+                 /* border-left: 4px solid transparent; */
+             }
+             .timeline-content.logo-inside .timeline-logo {
+                 /* Reset positioning as it's part of flex flow now */
+                 position: relative;
+                 left: auto; top: auto;
+                 width: calc(var(--item-logo-size, var(--mobile-logo-size)) * 1.1); /* Slightly larger logo inside */
+                 height: calc(var(--item-logo-size, var(--mobile-logo-size)) * 1.1);
+                 margin-bottom: 5px; margin-top: 0;
+                 align-self: flex-start; /* Keep logo aligned left */
              }
               /* Ensure all text within logo-inside is left-aligned */
-             .logo-inside .text-content { text-align: left !important; }
-             .logo-inside ul { text-align: left !important; padding-left: 20px !important; padding-right: 0 !important; list-style-position: outside !important; }
-
-             .timeline-content.logo-inside .timeline-logo {
-                 margin-bottom: 5px; margin-top: 0;
-             }
-
-             /* --- Mobile Arrow --- */
-             .timeline-content::before {
-                left: calc(-1 * var(--timeline-gap) + 10px) !important;
-                top: calc(30px + (var(--dot-size) / 2) - 10px);
-                border-right-color: var(--card-bg) !important; /* Ensure arrow points right */
-                border-left-width: 0 !important;
-             }
-
-              /* --- Mobile Text/List Alignment (Default - OUTSIDE Box) --- */
-             .timeline-item .timeline-content:not(.logo-inside){ text-align: left !important; }
-             .timeline-item .timeline-content:not(.logo-inside) ul { text-align: left !important; padding-left: 20px !important; padding-right: 0 !important; list-style-position: outside !important; }
+             .logo-inside .text-content { text-align: left !important; width: 100%; }
+             .logo-inside ul {
+                 text-align: left !important;
+                 padding-left: 20px !important;
+                 padding-right: 0 !important;
+                 list-style-position: outside !important;
+            }
 
              /* --- Mobile Projects Layout --- */
+             /* Stack projects vertically */
              .projects-container {
-                 flex-direction: column; /* Stack projects vertically */
-                 align-items: center; /* Center items */
-                 gap: 35px; /* Increase gap for vertical stacking */
+                 flex-direction: column;
+                 align-items: center; /* Center items vertically */
+                 gap: 35px;
              }
              .project-item {
                  flex-basis: auto; /* Reset basis */
@@ -380,39 +460,28 @@
                  max-width: 300px; /* Limit max width */
              }
         }
+        /* --- <<< MOBILE PHONE STYLES END HERE >>> --- */
 
+
+        /* Optional: Styles for very small screens (adjustments) */
         @media screen and (max-width: 576px) {
-            /* ... (keep existing styles) ... */
-            :root { --logo-size: 32px; /* Update default mobile size if desired */ /* ... */ }
-            /* Adjustments below use the GLOBAL --logo-size as they define the overall layout grid */
-            .timeline-section::before { left: calc(var(--logo-size) + var(--logo-margin) + 15px); }
-            .timeline-item { padding-left: calc(var(--logo-size) + var(--logo-margin) + var(--timeline-gap)); }
-            .timeline-item::after,
-            .timeline-item:nth-child(odd)::after,
-            .timeline-item:nth-child(even)::after { left: calc(var(--logo-size) + var(--logo-margin) + 15px - (var(--dot-size) / 2) - (3px / 2)); }
-            .timeline-content::before,
-            .timeline-item:nth-child(odd) .timeline-content::before,
-            .timeline-item:nth-child(even) .timeline-content::before { left: calc(-1 * var(--timeline-gap) + 10px) !important; }
-            /* Individual logo sizes (width, height, top) are still handled by the rules modified earlier */
-
-            :root { --project-image-size: 110px;} /* Slightly smaller project images on smallest screens */
-
+            :root {
+                /* Further reduce sizes/spacing for smallest screens */
+                --mobile-logo-size: 30px;
+                --mobile-line-left-offset: 30px;
+                --mobile-content-left-padding: calc(var(--mobile-line-left-offset) + 30px);
+                --project-image-size: 100px;
+                --dot-size: 12px;
+            }
+            body { padding: 20px 10px; } /* Reduce body padding further */
+            .timeline-content { padding: 15px; } /* Reduce content padding */
+            /* Adjust Font sizes if needed */
+             .timeline-content h3 { font-size: 1.05rem; }
+             .timeline-content .meta { font-size: 0.8rem; }
+             .timeline-content p { font-size: 0.88rem; }
+             .intro h1 { font-size: 2rem; }
+             .intro .tagline { font-size: 1rem; }
         }
-
-        .cv-button {
-            display: inline-block;
-            padding: 10px 20px;
-            background-color: #0070f3;
-            color: white;
-            text-decoration: none;
-            border-radius: 8px;
-            font-weight: bold;
-            transition: background-color 0.2s;
-          }
-          
-          .cv-button:hover {
-            background-color: #005bb5;
-          }
 
     </style>
 </head>
@@ -430,22 +499,22 @@
         <!-- Timeline starts here -->
         <section class="timeline-section">
 
-            <!-- Item 1 (Odd) - Stanford: LOGO INSIDE -->
-            <div class="timeline-item">
+             <!-- Item 1 (Odd) - Stanford: LOGO INSIDE -->
+             <div class="timeline-item" style="--item-logo-size: 45px;"> <!-- Example: Specific logo size override -->
                 <div class="timeline-content logo-inside">
-                    <div class="timeline-logo ">
+                    <div class="timeline-logo">
                         <img src="assets/stanford_logo.png" alt="Stanford Logo">
                     </div>
                     <div class="text-content">
                         <h3>Stanford University</h3>
-                        <span class="meta" style="text-align: left;">Visiting Student Researcher | April 25' - Present</span>
-                        <p style="text-align: left;">Research on Structural Health Monitoring for aerospace applications.</p>
+                        <span class="meta">Visiting Student Researcher | April 25' - Present</span> <!-- Removed inline style -->
+                        <p>Research on Structural Health Monitoring for aerospace applications.</p> <!-- Removed inline style -->
                     </div>
                 </div>
             </div>
 
             <!-- Item 2 (Even) - Airbus: LOGO INSIDE -->
-            <div class="timeline-item">
+            <div class="timeline-item" style="--item-logo-size: 45px;">
                  <div class="timeline-content logo-inside">
                     <div class="timeline-logo">
                          <img src="assets/airbus_logo.png" alt="Airbus Logo">
@@ -459,23 +528,23 @@
             </div>
 
             <!-- Item 3 (Odd) - TUM M.Sc: LOGO INSIDE -->
-            <div class="timeline-item">
+            <div class="timeline-item" style="--item-logo-size: 40px;">
                 <div class="timeline-content logo-inside">
                     <div class="timeline-logo">
                         <img src="assets/tum_logo.png" alt="TUM Logo">
                     </div>
                     <div class="text-content">
                         <h3>Technical University Munich</h3>
-                        <span class="meta" style="text-align: left;">M.Sc - Aerospace | September 24' - Present</span>
-                        <p style="text-align: left;">Aerospace Engineering program, 120 ECTS</p>
+                        <span class="meta">M.Sc - Aerospace | September 24' - Present</span> <!-- Removed inline style -->
+                        <p>Aerospace Engineering program, 120 ECTS</p> <!-- Removed inline style -->
                     </div>
                 </div>
             </div>
 
             <!-- Item 4 (Even) - Quantum Diamonds: LOGO INSIDE -->
-            <div class="timeline-item">
+            <div class="timeline-item" style="--item-logo-size: 40px;">
                 <div class="timeline-content logo-inside">
-                     <div class="timeline-logo ">
+                     <div class="timeline-logo">
                         <img src="assets/quantumdiamonds_logo.jpeg" alt="QD Logo">
                     </div>
                     <div class="text-content">
@@ -487,23 +556,23 @@
             </div>
 
             <!-- Item 5 (Odd) - TUM B.Sc: LOGO INSIDE -->
-            <div class="timeline-item">
+            <div class="timeline-item" style="--item-logo-size: 40px;">
                  <div class="timeline-content logo-inside">
                     <div class="timeline-logo">
                          <img src="assets/tum_logo.png" alt="TUM Logo">
                     </div>
                     <div class="text-content">
                         <h3>Technical University Munich</h3>
-                        <span class="meta" style="text-align: left;">B.Sc - Engineering Science | Oct 20' - 24'</span>
-                        <p style="text-align: left;">210 ECTS interdisciplinary engineering program covering various aspects of engineering</p>
+                        <span class="meta">B.Sc - Engineering Science | Oct 20' - 24'</span> <!-- Removed inline style -->
+                        <p>210 ECTS interdisciplinary engineering program covering various aspects of engineering</p> <!-- Removed inline style -->
                     </div>
                  </div>
             </div>
 
             <!-- Item 6 (Even) - BMW: LOGO INSIDE -->
-            <div class="timeline-item">
+            <div class="timeline-item" style="--item-logo-size: 45px;">
                 <div class="timeline-content logo-inside">
-                    <div class="timeline-logo ">
+                    <div class="timeline-logo">
                         <img src="assets/bmw_logo.png" alt="BMW Logo">
                     </div>
                     <div class="text-content">
@@ -520,7 +589,27 @@
 
         <!-- Updated Projects Section -->
         <section class="projects">
+            <!-- <h2 >Projects</h2> You can keep or remove this title -->
+            <!-- Link to CV -->
             <a href="assets/Luis_CV_March_25.pdf" class="cv-button" target="_blank">View CV</a>
+
+            <!-- You can add project items here if needed, like below -->
+            <!--
+            <div class="projects-container">
+                <div class="project-item">
+                    <h3>Project Title 1</h3>
+                    <img src="assets/project1.jpg" alt="Project 1 Image" class="project-image">
+                </div>
+                 <div class="project-item">
+                    <h3>Project Title 2</h3>
+                    <img src="assets/project2.jpg" alt="Project 2 Image" class="project-image">
+                </div>
+                 <div class="project-item">
+                    <h3>Project Title 3</h3>
+                    <img src="assets/project3.jpg" alt="Project 3 Image" class="project-image">
+                </div>
+            </div>
+            -->
         </section>
         <!-- End of Projects Section -->
 
@@ -539,6 +628,11 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const timelineItems = document.querySelectorAll('.timeline-item');
+
+            // Simple check for mobile based on window width at load time
+            // This determines if we should apply the X-axis animation offset
+            const isLikelyMobile = window.innerWidth <= 768;
+
             const observerForAnimation = new IntersectionObserver((entries, observer) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
@@ -546,17 +640,21 @@
                         // Optional: Unobserve after first animation
                         // observer.unobserve(entry.target);
                     } else {
-                         // Optional: Re-hide if scrolled out of view completely
-                         // Check if the item is completely out of view before removing class
-                         // This might need tweaking based on desired effect
-                         // if (entry.boundingClientRect.bottom < 0 || entry.boundingClientRect.top > window.innerHeight) {
-                         //     entry.target.classList.remove('is-visible');
-                         // }
+                        // Optional: Re-hide if scrolled out of view completely (can cause flicker)
+                        // if (entry.boundingClientRect.bottom < 0 || entry.boundingClientRect.top > window.innerHeight) {
+                        //    entry.target.classList.remove('is-visible');
+                        // }
                     }
                 });
-            }, { root: null, threshold: 0.1 }); // Trigger when 10% visible
+            }, {
+                root: null, // viewport
+                threshold: 0.1 // Trigger when 10% of the item is visible
+             });
 
             timelineItems.forEach(item => {
+                // If it's likely mobile, we might skip setting the initial X transform override
+                // BUT the CSS already handles this by resetting the transform inside the media query.
+                // So, just observe. The CSS will determine the correct starting/ending transform.
                 observerForAnimation.observe(item);
             });
         });
